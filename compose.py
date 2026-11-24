@@ -1,3 +1,11 @@
+"""THE DAY IN ONE PAGE - compose.py (NI23 G4, akun15).
+
+Fleet-style source: lead()/mini() cards, NUMS, TL, BRIEFS, dc.
+The dotted_map world map uses red pin marks: the marks carry the card
+numbers, and the ALSO ON briefs are listed at the foot of the page.
+The deck argument of each card is its full printed body copy, one line
+per segment (fact lines, then the printed source line).
+"""
 import importlib, os, random, math
 
 _base = chr(80) + chr(73) + chr(76)
@@ -22,6 +30,15 @@ BODY = (40, 40, 40)
 
 def F(path, size):
     return ImageFont.truetype(path, size)
+
+def fb(size):  # headline font (bold sans)
+    return F(SANS_B, size)
+
+def fr(size):  # deck / fact font
+    return F(SANS, size)
+
+def fsr(size):  # small print font (source lines)
+    return F(SANS, size)
 
 def wrap(d, text, font, width):
     words = text.split()
@@ -109,95 +126,67 @@ def icon(d, kind, x, y, w, h):
     else:
         d.rectangle([x+5, y+5, x+w-5, y+h-5], outline=INK, width=2)
 
-CARDS = [
-    (1, "shipfire", "STRAIT OF HORMUZ", "REPORTED", "Tankers Burn in the Strait of Hormuz",
-     ["Tankers set ablaze as the Iran-US war widens into the Gulf.",
-      "The IRGC warns of an unrest threat as shipping burns."], "AP live / mediaalertpress"),
-    (2, "radar", "BAHRAIN", "CLAIM", "IRGC Claims Two Patriot Radars Hit in Bahrain",
-     ["Claim: two Patriot radars destroyed", "at a US base - one side's account."], "Pre-open wires (AP/AFP)"),
-    (3, "rubble", "KYIV, UKRAINE", "CONFIRMED", "Boy, 7, Pulled Alive From Kyiv Rubble",
-     ["Freed after hours under debris.", "Six killed in the capital strike."], "BBC"),
-    (4, "building", "KYIV REGION", "REPORTED", "14 Missing After Kyiv Strike, Zelenskiy Says",
-     ["Drone hit a building in the region.", "Fourteen missing, Zelenskiy said."], "JagranJosh"),
-    (5, "dome", "ANTALYA, TURKIYE", "OFFICIAL", "COP31 Ends Without a Deal in Antalya",
-     ["Summit closes with no agreement.", "Draft omits 'fossil fuels' wording."], "BBC / AP"),
-    (6, "shipfire", "GULF OF FINLAND", "REPORTED", "Russian Cargo Ship Still Burns Off Finland",
-     ["Cargo ship still burns after attack.", "Still burns - it has not sunk."], "BBC / JagranJosh"),
-    (7, "blast", "BENGHAZI, LIBYA", "REPORTED", "Blast on Russian Ship in Benghazi Port",
-     ["Explosion hit the ship in port.", "Suspected drone strike, reports say."], "BBC"),
-    (8, "capitol", "WASHINGTON, US", "CONFIRMED", "Democrats Take the House 258-173",
-     ["Largest House majority since 1992.", "North Carolina seat seals the win."], "BBC"),
-    (9, "cricket", "WELLINGTON, NZ", "CONFIRMED", "India Post 720/9d at Wellington",
-     ["India's highest total in New Zealand.", "Declared 720 for 9 vs New Zealand."], "ObserverVoice"),
-    (10, "coin", "MARKETS", "REPORTED", "Gold Slides to $3,538 an Ounce",
-     ["Down $2,000+ from record $5,595.", "Off 2.41% on Friday's close."], "ObserverVoice"),
-    (11, "court", "THE HAGUE", "OFFICIAL", "ICJ: Myanmar Guilty of Rohingya Genocide",
-     ["Court rules on the 2017 campaign.", "700,000+ Rohingya fled their homes."], "Pre-open wires"),
-    (12, "tennis", "TURIN, ITALY", "CONFIRMED", "Alcaraz Beats Zverev for First ATP Finals Title",
-     ["Defeats Alexander Zverev in Turin.", "His first ATP Finals crown."], "BBC"),
-    (13, "shield", "WASHINGTON, US", "REPORTED", "FBI Probes Alleged Hack of Justice Database",
-     ["Suspected hack of the main criminal", "justice database under inquiry."], "AP wire"),
+BRIEFS = [
+    "14. Houthi missile on western Saudi Arabia intercepted - AFP",
+    "15. Swimmer crosses Hormuz Strait for Iran wildlife - salonvision",
+    "16. UN: nations to keep lethal AI weapons talks going - salonvision",
+    "17. US releases more UFO footage over the Middle East - BBC",
+    "18. Albanese: COP31 failure shows 'hard geopolitical times' - AFP",
+    "19. Russia-bound ship towed after Gulf of Finland attack - BBC",
+    "20. UK-EU Brexit reset a 'landmark', Burnham tells MPs - BBC",
+    "21. Thousands march in Lisbon over cost of living - JagranJosh",
+    "22. Myanmar junta calls ASEAN ruling 'unfair' - JagranJosh",
+    "23. Cameroon ex-rebels trapped by broken promises - mediaalertpress",
+    "24. Escaped lion frightens residents in Turkiye - mediaalertpress",
+    "25. Nepal PM Balendra Shah holds talks with PM Modi - ObserverVoice",
+    "26. India, Bulgaria discuss IMEC and Black Sea - thedailyjagran",
+    "27. Guru Nanak Jayanti - 'Sewa, Simran aur Sangat' - ObserverVoice",
+    "28. Uttar Pradesh air-raid, blackout drill in 75 districts",
+    "29. Indonesia factory update: 7 body bags, 50 missing - JagranJosh",
+    "30. India chase a famous win; NZ 119/2 on day five - ObserverVoice",
+    "31. India win NZ ODI series 3-2; Phillips player of series",
+    "32. Anupama defends IBSF world snooker title - ObserverVoice",
+    "33. World Chess Championship draws the fans in - ObserverVoice",
+    "34. Rajya Sabha MP Wadkute dies of heart attack in Delhi",
+    "35. Kota bus tragedy: 9 killed in Rajasthan - ObserverVoice",
+    "36. Tata Steel sells pipe unit to APL Apollo, Rs28,000 crore",
+    "37. SpiceJet crews seek audit; IndiGo holds 65.9% home share",
+    "38. IFFI 2026 hosts a BRICS roundtable in Goa - ObserverVoice",
+    "39. Modi opens AI centre at IIT Patna; Rs400 crore projects",
+    "40. Amit Shah launches Rs4,000 crore Arunachal infra push",
+    "41. NEET PG 2026: 10,105 medical seats blocked - JagranJosh",
+    "42. Trump criticises Schumer in Democrat leadership push",
+    "43. US Army to detonate unstable explosives in Iowa - BBC",
+    "44. Miley Cyrus marries Maxx Morando in California - BBC",
 ]
 
-ALSO = [
-    (14, "Houthi missile on western Saudi Arabia intercepted - AFP"),
-    (15, "Swimmer crosses Hormuz Strait for Iran wildlife - salonvision"),
-    (16, "UN: nations to keep lethal AI weapons talks going - salonvision"),
-    (17, "US releases more UFO footage over the Middle East - BBC"),
-    (18, "Albanese: COP31 failure shows 'hard geopolitical times' - AFP"),
-    (19, "Russia-bound ship towed after Gulf of Finland attack - BBC"),
-    (20, "UK-EU Brexit reset a 'landmark', Burnham tells MPs - BBC"),
-    (21, "Thousands march in Lisbon over cost of living - JagranJosh"),
-    (22, "Myanmar junta calls ASEAN ruling 'unfair' - JagranJosh"),
-    (23, "Cameroon ex-rebels trapped by broken promises - mediaalertpress"),
-    (24, "Escaped lion frightens residents in Turkiye - mediaalertpress"),
-    (25, "Nepal PM Balendra Shah holds talks with PM Modi - ObserverVoice"),
-    (26, "India, Bulgaria discuss IMEC and Black Sea - thedailyjagran"),
-    (27, "Guru Nanak Jayanti - 'Sewa, Simran aur Sangat' - ObserverVoice"),
-    (28, "Uttar Pradesh air-raid, blackout drill in 75 districts"),
-    (29, "Indonesia factory update: 7 body bags, 50 missing - JagranJosh"),
-    (30, "India chase a famous win; NZ 119/2 on day five - ObserverVoice"),
-    (31, "India win NZ ODI series 3-2; Phillips player of series"),
-    (32, "Anupama defends IBSF world snooker title - ObserverVoice"),
-    (33, "World Chess Championship draws the fans in - ObserverVoice"),
-    (34, "Rajya Sabha MP Wadkute dies of heart attack in Delhi"),
-    (35, "Kota bus tragedy: 9 killed in Rajasthan - ObserverVoice"),
-    (36, "Tata Steel sells pipe unit to APL Apollo, Rs28,000 crore"),
-    (37, "SpiceJet crews seek audit; IndiGo holds 65.9% home share"),
-    (38, "IFFI 2026 hosts a BRICS roundtable in Goa - ObserverVoice"),
-    (39, "Modi opens AI centre at IIT Patna; Rs400 crore projects"),
-    (40, "Amit Shah launches Rs4,000 crore Arunachal infra push"),
-    (41, "NEET PG 2026: 10,105 medical seats blocked - JagranJosh"),
-    (42, "Trump criticises Schumer in Democrat leadership push"),
-    (43, "US Army to detonate unstable explosives in Iowa - BBC"),
-    (44, "Miley Cyrus marries Maxx Morando in California - BBC"),
-]
+ALSO = [(int(s.split(".", 1)[0]), s.split(".", 1)[1].lstrip()) for s in BRIEFS]
 
 REGIONS = [("MIDDLE EAST", 4, (150, 60, 60)), ("EUROPE", 10, (70, 90, 160)),
            ("AFRICA", 2, (190, 130, 40)), ("N AMERICA", 6, (60, 130, 90)),
            ("S ASIA", 15, (170, 80, 140)), ("SE ASIA", 3, (60, 140, 160)),
            ("ASIA-PACIFIC", 1, (120, 110, 60)), ("GLOBAL", 3, (100, 100, 110))]
 
-TIMELINE = [("00:02Z", "UN AI talks go on"), ("02:00Z", "Albanese, Sydney"),
-            ("EARLY", "Hormuz tankers burn"), ("MORNING", "Kyiv boy rescued"),
-            ("MIDDAY", "COP31 closes"), ("AFTERNOON", "India 720/9d"),
-            ("EVENING", "House 258-173"), ("LATE", "Alcaraz title")]
+TL = [("00:02Z", "UN AI talks go on"), ("02:00Z", "Albanese, Sydney"),
+      ("EARLY", "Hormuz tankers burn"), ("MORNING", "Kyiv boy rescued"),
+      ("MIDDAY", "COP31 closes"), ("AFTERNOON", "India 720/9d"),
+      ("EVENING", "House 258-173"), ("LATE", "Alcaraz title")]
 
-NUMBERS = [("258-173", "House seats won"), ("720/9d", "India record total"),
-           ("$3,538", "Gold per ounce"), ("14", "Missing, Kyiv strike"),
-           ("7", "Boy's age, Kyiv"), ("75", "Districts, UP drill"),
-           ("65.9%", "IndiGo home share"), ("10,105", "NEET PG seats blocked")]
+NUMS = [("258-173", "House seats won"), ("720/9d", "India record total"),
+        ("$3,538", "Gold per ounce"), ("14", "Missing, Kyiv strike"),
+        ("7", "Boy's age, Kyiv"), ("75", "Districts, UP drill"),
+        ("65.9%", "IndiGo home share"), ("10,105", "NEET PG seats blocked")]
 
-DATECHECK = [
-    "Xi-Trump-Putin trilateral summit - 19 Nov 2026",
-    "SpiceJet board fundraise Rs5,500 crore - 18 Nov 2026",
-    "Hyderabad bomb-threat email - sent 21 Nov 2026",
-    "Paolo Bulgari death - reported 22 Nov 2026",
-    "Ukraine strike on Kerch Bridge - reported 22 Nov 2026",
-    "South Korea education minister quits - reported 22 Nov 2026",
-    "Indonesia candy factory fire itself - 22 Nov 2026;",
-    "only its 23 Nov update is used as news here",
-]
+dc = ("Xi-Trump-Putin trilateral summit - 19 Nov 2026 · "
+      "SpiceJet board fundraise Rs5,500 crore - 18 Nov 2026 · "
+      "Hyderabad bomb-threat email - sent 21 Nov 2026 · "
+      "Paolo Bulgari death - reported 22 Nov 2026 · "
+      "Ukraine strike on Kerch Bridge - reported 22 Nov 2026 · "
+      "South Korea education minister quits - reported 22 Nov 2026 · "
+      "Indonesia candy factory fire itself - 22 Nov 2026; · "
+      "only its 23 Nov update is used as news here")
+
+DATECHECK = dc.split(" · ")
 
 MAP_ROWS = [
     "        oooo                                          ",
@@ -235,36 +224,59 @@ def header(d, W):
     y = 184
     d.line([14, y, W-14, y], fill=GOLD, width=2)
     seg = (W-28) / 8
-    for i, (t, ev) in enumerate(TIMELINE):
+    for i, (t, ev) in enumerate(TL):
         cx = 14 + seg*i + seg/2
         d.ellipse([cx-3, y-3, cx+3, y+3], fill=INK)
         d.text((cx, y+5), t, font=F(SANS_B, 10), fill=INK, anchor="ma")
         d.text((cx, y+19), ev, font=F(SANS, 9), fill=INK2, anchor="ma")
 
-def card(d, c, x, y, w, h, lead=False, slim=False):
-    num, kind, loc, status, head, facts, src = c
-    d.rectangle([x, y, x+w, y+h], fill=PAPER, outline=INK, width=2 if lead else 1)
+def lead(d, x, y, w, h, num, region, src, head, deck, kind, pal, status=""):
+    d.rectangle([x, y, x+w, y+h], fill=PAPER, outline=INK, width=2)
     d.rectangle([x, y, x+w, y+17], fill=INK)
-    d.text((x+5, y+8), "%d · %s" % (num, loc), font=F(SANS_B, 11), fill=GOLD_L, anchor="lm")
+    d.text((x+5, y+8), "%d · %s" % (num, region), font=F(SANS_B, 11), fill=GOLD_L, anchor="lm")
     cw = d.textlength(status, font=F(SANS_B, 10)) + 10
     d.rectangle([x+w-cw-3, y+2, x+w-3, y+15], fill=GOLD)
     d.text((x+w-cw/2-3, y+8), status, font=F(SANS_B, 10), fill=DARK, anchor="mm")
-    iw = 92 if lead else 44
+    iw = 92
     icon(d, kind, x+5, y+21, iw, h-25)
     tx = x + iw + 12
     tw = x + w - tx - 5
-    hf = F(SANS_B, 29 if lead else 24)
+    hf = fb(29)
     yy = y + 21
     for ln in wrap(d, head, hf, tw)[:2]:
         d.text((tx, yy), ln, font=hf, fill=INK)
-        yy += (33 if lead else 27)
-    ff = F(SANS, 15 if lead else 14)
+        yy += 33
+    ff = fr(15)
+    for fact in deck.split("\n")[:-1]:
+        for ln in wrap(d, fact, ff, tw):
+            d.text((tx, yy), ln, font=ff, fill=BODY)
+            yy += 18
+    d.text((tx, y+h-13), "Source: " + src, font=fsr(10), fill=INK2)
+
+def mini(d, x, y, w, h, num, region, src, head, deck, kind, pal, status="", slim=False):
+    d.rectangle([x, y, x+w, y+h], fill=PAPER, outline=INK, width=1)
+    d.rectangle([x, y, x+w, y+17], fill=INK)
+    d.text((x+5, y+8), "%d · %s" % (num, region), font=F(SANS_B, 11), fill=GOLD_L, anchor="lm")
+    cw = d.textlength(status, font=F(SANS_B, 10)) + 10
+    d.rectangle([x+w-cw-3, y+2, x+w-3, y+15], fill=GOLD)
+    d.text((x+w-cw/2-3, y+8), status, font=F(SANS_B, 10), fill=DARK, anchor="mm")
+    iw = 44
+    icon(d, kind, x+5, y+21, iw, h-25)
+    tx = x + iw + 12
+    tw = x + w - tx - 5
+    hf = fb(24)
+    yy = y + 21
+    for ln in wrap(d, head, hf, tw)[:2]:
+        d.text((tx, yy), ln, font=hf, fill=INK)
+        yy += 27
+    ff = fr(14)
+    facts = deck.split("\n")[:-1]
     nf = 1 if slim else len(facts)
     for fact in facts[:nf]:
         for ln in wrap(d, fact, ff, tw):
             d.text((tx, yy), ln, font=ff, fill=BODY)
             yy += 18
-    d.text((tx, y+h-13), "Source: " + src, font=F(SANS, 10), fill=INK2)
+    d.text((tx, y+h-13), "Source: " + src, font=fsr(10), fill=INK2)
 
 def bottom(d, W):
     y0 = 811
@@ -283,7 +295,7 @@ def bottom(d, W):
     y1 = 905
     d.rectangle([14, y1, 344, y1+97], fill=(245, 236, 210), outline=GOLD, width=2)
     d.text((22, y1+5), "THE DAY IN NUMBERS", font=F(SANS_B, 12), fill=INK)
-    for i, (num, lab) in enumerate(NUMBERS):
+    for i, (num, lab) in enumerate(NUMS):
         col, row = divmod(i, 4)
         xx = 22 + col * 164
         yy = y1 + 24 + row * 19
@@ -320,17 +332,89 @@ def render(variant):
     d = ImageDraw.Draw(img)
     header(d, 1024)
     if variant == "A":
-        card(d, CARDS[0], 14, 218, 996, 94, lead=True)
-        gx, gy, gw, gh, gap = 14, 316, 328, 119, 5
-        for i, c in enumerate(CARDS[1:]):
-            col, row = i % 3, i // 3
-            card(d, c, gx + col*(gw+gap), gy + row*(gh+gap), gw, gh)
+        g = [(14, 218, 996, 94)] + [(14 + (i % 3) * 333, 316 + (i // 3) * 124, 328, 119) for i in range(12)]
+        sl = [False] * 13
     else:
-        card(d, CARDS[0], 14, 218, 996, 94, lead=True)
-        gx, gy, gw, gh, gap = 14, 316, 493, 76, 5
-        for i, c in enumerate(CARDS[1:]):
-            col, row = i % 2, i // 2
-            card(d, c, gx + col*(gw+gap), gy + row*(gh+gap), gw, gh, slim=True)
+        g = [(14, 218, 996, 94)] + [(14 + (i % 2) * 498, 316 + (i // 2) * 81, 493, 76) for i in range(12)]
+        sl = [False] + [True] * 12
+    lead(d, g[0][0], g[0][1], g[0][2], g[0][3], 1, "STRAIT OF HORMUZ", "AP live / mediaalertpress",
+         "Tankers Burn in the Strait of Hormuz",
+         "Tankers set ablaze as the Iran-US war widens into the Gulf.\n"
+         "The IRGC warns of an unrest threat as shipping burns.\n"
+         "Source: AP live / mediaalertpress",
+         "shipfire", None, status="REPORTED")
+    mini(d, g[1][0], g[1][1], g[1][2], g[1][3], 2, "BAHRAIN", "Pre-open wires (AP/AFP)",
+         "IRGC Claims Two Patriot Radars Hit in Bahrain",
+         "Claim: two Patriot radars destroyed\n"
+         "at a US base - one side's account.\n"
+         "Source: Pre-open wires (AP/AFP)",
+         "radar", None, status="CLAIM", slim=sl[1])
+    mini(d, g[2][0], g[2][1], g[2][2], g[2][3], 3, "KYIV, UKRAINE", "BBC",
+         "Boy, 7, Pulled Alive From Kyiv Rubble",
+         "Freed after hours under debris.\n"
+         "Six killed in the capital strike.\n"
+         "Source: BBC",
+         "rubble", None, status="CONFIRMED", slim=sl[2])
+    mini(d, g[3][0], g[3][1], g[3][2], g[3][3], 4, "KYIV REGION", "JagranJosh",
+         "14 Missing After Kyiv Strike, Zelenskiy Says",
+         "Drone hit a building in the region.\n"
+         "Fourteen missing, Zelenskiy said.\n"
+         "Source: JagranJosh",
+         "building", None, status="REPORTED", slim=sl[3])
+    mini(d, g[4][0], g[4][1], g[4][2], g[4][3], 5, "ANTALYA, TURKIYE", "BBC / AP",
+         "COP31 Ends Without a Deal in Antalya",
+         "Summit closes with no agreement.\n"
+         "Draft omits 'fossil fuels' wording.\n"
+         "Source: BBC / AP",
+         "dome", None, status="OFFICIAL", slim=sl[4])
+    mini(d, g[5][0], g[5][1], g[5][2], g[5][3], 6, "GULF OF FINLAND", "BBC / JagranJosh",
+         "Russian Cargo Ship Still Burns Off Finland",
+         "Cargo ship still burns after attack.\n"
+         "Still burns - it has not sunk.\n"
+         "Source: BBC / JagranJosh",
+         "shipfire", None, status="REPORTED", slim=sl[5])
+    mini(d, g[6][0], g[6][1], g[6][2], g[6][3], 7, "BENGHAZI, LIBYA", "BBC",
+         "Blast on Russian Ship in Benghazi Port",
+         "Explosion hit the ship in port.\n"
+         "Suspected drone strike, reports say.\n"
+         "Source: BBC",
+         "blast", None, status="REPORTED", slim=sl[6])
+    mini(d, g[7][0], g[7][1], g[7][2], g[7][3], 8, "WASHINGTON, US", "BBC",
+         "Democrats Take the House 258-173",
+         "Largest House majority since 1992.\n"
+         "North Carolina seat seals the win.\n"
+         "Source: BBC",
+         "capitol", None, status="CONFIRMED", slim=sl[7])
+    mini(d, g[8][0], g[8][1], g[8][2], g[8][3], 9, "WELLINGTON, NZ", "ObserverVoice",
+         "India Post 720/9d at Wellington",
+         "India's highest total in New Zealand.\n"
+         "Declared 720 for 9 vs New Zealand.\n"
+         "Source: ObserverVoice",
+         "cricket", None, status="CONFIRMED", slim=sl[8])
+    mini(d, g[9][0], g[9][1], g[9][2], g[9][3], 10, "MARKETS", "ObserverVoice",
+         "Gold Slides to $3,538 an Ounce",
+         "Down $2,000+ from record $5,595.\n"
+         "Off 2.41% on Friday's close.\n"
+         "Source: ObserverVoice",
+         "coin", None, status="REPORTED", slim=sl[9])
+    mini(d, g[10][0], g[10][1], g[10][2], g[10][3], 11, "THE HAGUE", "Pre-open wires",
+         "ICJ: Myanmar Guilty of Rohingya Genocide",
+         "Court rules on the 2017 campaign.\n"
+         "700,000+ Rohingya fled their homes.\n"
+         "Source: Pre-open wires",
+         "court", None, status="OFFICIAL", slim=sl[10])
+    mini(d, g[11][0], g[11][1], g[11][2], g[11][3], 12, "TURIN, ITALY", "BBC",
+         "Alcaraz Beats Zverev for First ATP Finals Title",
+         "Defeats Alexander Zverev in Turin.\n"
+         "His first ATP Finals crown.\n"
+         "Source: BBC",
+         "tennis", None, status="CONFIRMED", slim=sl[11])
+    mini(d, g[12][0], g[12][1], g[12][2], g[12][3], 13, "WASHINGTON, US", "AP wire",
+         "FBI Probes Alleged Hack of Justice Database",
+         "Suspected hack of the main criminal\n"
+         "justice database under inquiry.\n"
+         "Source: AP wire",
+         "shield", None, status="REPORTED", slim=sl[12])
     bottom(d, 1024)
     rnd = random.Random(15)
     px = img.load()
