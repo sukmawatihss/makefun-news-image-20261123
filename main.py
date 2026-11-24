@@ -26,20 +26,6 @@ def read_entry(path):
         return fh.read()
 
 
-def check_dimensions(data):
-    """Second, independent guard: the IHDR header must say 1024 x 1024.
-
-    Width and height sit at byte offsets 16-19 and 20-23 of a PNG, big
-    endian, right after the 8-byte signature and the IHDR chunk header.
-    """
-    if len(data) < 24:
-        raise SystemExit("entry.png too short to hold an IHDR header")
-    width = int.from_bytes(data[16:20], "big")
-    height = int.from_bytes(data[20:24], "big")
-    if (width, height) != (1024, 1024):
-        raise SystemExit("entry.png is %dx%d, expected 1024x1024" % (width, height))
-
-
 def check_entry(data):
     """Refuse to ship anything that is not the exact verified PNG."""
     if not data:
@@ -57,6 +43,20 @@ def check_entry(data):
     if digest != EXPECTED_SHA256:
         raise SystemExit("entry.png sha256 mismatch: %s" % digest)
     return digest
+
+
+def check_dimensions(data):
+    """Second, independent guard: the IHDR header must say 1024 x 1024.
+
+    Width and height sit at byte offsets 16-19 and 20-23 of a PNG, big
+    endian, right after the 8-byte signature and the IHDR chunk header.
+    """
+    if len(data) < 24:
+        raise SystemExit("entry.png too short to hold an IHDR header")
+    width = int.from_bytes(data[16:20], "big")
+    height = int.from_bytes(data[20:24], "big")
+    if (width, height) != (1024, 1024):
+        raise SystemExit("entry.png is %dx%d, expected 1024x1024" % (width, height))
 
 
 def main():
