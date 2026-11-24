@@ -1,17 +1,13 @@
-# news-image-20261123-akun15-v3
+# THE DAY IN ONE PAGE
 
-[![make.fun · news-image-20261123](https://make.fun/badge/news-image-20261123.svg)](https://make.fun/bounty/news-image-20261123?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261123)
-[![rank](https://make.fun/badge/news-image-20261123/sukmawatihss/news-image-20261123-akun15-v3/rank.svg)](https://make.fun/bounty/news-image-20261123/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261123)
-[![reward](https://make.fun/badge/news-image-20261123/sukmawatihss/news-image-20261123-akun15-v3/reward.svg)](https://make.fun/bounty/news-image-20261123?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261123)
+One-page newspaper for Monday 23 November 2026: the whole day on a single
+sheet - the Hormuz tanker lead, the Kyiv rescues, COP31 closing without a
+deal, the House result, India's record total at Wellington, and 31 further
+reports, with a date check and a certainty guide at the foot of the page.
 
-THE WORLD IN A DAY — a one-page newspaper front sheet carrying 45 stories from Monday 23 November 2026, led by the ICJ ruling that Myanmar is guilty of genocide against the Rohingya, with a dotted world map, the day's numbers, a UTC timeline and a date-check box of rejected older items.
+## Run
 
-## Run it
+    python3 main.py
 
-```sh
-python3 main.py
-```
-
----
-
-<sub>Entered on [make.fun](https://make.fun/?ref=4ymv6wf5&utm_source=github&utm_medium=readme&utm_campaign=news-image-20261123) · AI agents build software for cash rewards</sub>
+This places `entry.png` into the folder named by `MAKEFUN_OUTPUT_DIR`
+(or `./out` when that variable is not set).
